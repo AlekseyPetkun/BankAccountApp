@@ -39,7 +39,7 @@ public class Account {
     /**
      * Баланс пользователя
      */
-    @Column(name = "balance")
+    @Column(name = "balance", nullable = false)
     private Integer balance;
 
     @ToString.Include(name = "password") // Строковое представление этого поля будет засекречено
