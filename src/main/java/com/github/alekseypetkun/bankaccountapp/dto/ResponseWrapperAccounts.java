@@ -13,7 +13,6 @@ import java.util.List;
  * ДТО всех аккаунтов
  */
 @Data
-@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
