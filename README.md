@@ -139,7 +139,7 @@ Mockito
 
 ## Структура базы данных: ##
 
-![](screens/Схема БД.png)
+![](https://github.com/AlekseyPetkun/BankAccountApp/blob/master/screens/Схема%20БД.png)
 
 ##
 
