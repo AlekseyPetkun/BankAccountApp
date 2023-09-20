@@ -1,0 +1,231 @@
+openapi: 3.0.3
+info:
+  version: '1.0'
+  title: BankAccountApplication
+  description: Веб-приложение по типу банковского приложения для создания счетов
+servers:
+  - url: http://localhost:8071
+    description: Generated server url
+paths:
+  /api/accounts:
+    get:
+      tags:
+        - API по работе с аккаунтами
+      summary: Получить все аккаунты пользователя
+      operationId: getAllAccounts
+      parameters:
+        - name: page_number
+          in: query
+          required: false
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+            default: 0
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
+      responses:
+        "200":
+          description: Получен список аккаунтов (Ok)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseWrapperAccounts'
+        "500":
+          description: "Произошла ошибка, не зависящая от вызывающей стороны"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseWrapperAccounts'
+    post:
+      tags:
+        - API по работе с аккаунтами
+      summary: Добавление нового аккаунта
+      description: Нужно заполнить параметры для создания аккаунта
+      operationId: addAccount
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAccount'
+        required: true
+      responses:
+        "201":
+          description: Аккаунт был добавлен (Created)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseAccount'
+        "400":
+          description: "Аккаунт не добавлен, т.к. не прошел валидацию (Bad Request)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseAccount'
+        "409":
+          description: "Аккаунт не добавлен, т.к. такое имя уже существует (Conflict)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseAccount'
+  /api/accounts/transfer:
+    post:
+      tags:
+        - API по работе с аккаунтами
+      summary: Перевод средств на другой счет
+      description: Нужно заполнить параметры для перевода баланса и ввести пин-код
+      operationId: transfer
+      parameters:
+        - name: password
+          in: query
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferAccount'
+        required: true
+      responses:
+        "200":
+          description: Средства были переведены (OK)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseAccount'
+        "400":
+          description: "Средства не были переведены, т.к. не прошли валидацию (Bad\
+            \ Request)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseAccount'
+  /api/accounts/replenish:
+    post:
+      tags:
+        - API по работе с аккаунтами
+      summary: Пополнение баланса
+      description: Нужно заполнить параметры для пополнения баланса
+      operationId: replenishBalance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBalance'
+        required: true
+      responses:
+        "200":
+          description: Баланс был пополнен (OK)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseAccount'
+        "400":
+          description: "Баланс не пополнен, т.к. не прошел валидацию (Bad Request)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseAccount'
+  /api/accounts/remove:
+    post:
+      tags:
+        - API по работе с аккаунтами
+      summary: Снятие средств с баланса
+      description: Нужно заполнить параметры для снятия баланса и ввести пин-код
+      operationId: removeFromBalance
+      parameters:
+        - name: password
+          in: query
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBalance'
+        required: true
+      responses:
+        "200":
+          description: Средства были сняты с баланса (OK)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseAccount'
+        "400":
+          description: "Средства не были сняты с баланса, т.к. не прошли валидацию\
+            \ (Bad Request)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseAccount'
+components:
+  schemas:
+    ResponseAccount:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        balance:
+          type: integer
+          format: int32
+    CreateAccount:
+      required:
+        - password
+        - username
+      type: object
+      properties:
+        username:
+          maxLength: 64
+          minLength: 2
+          type: string
+        password:
+          pattern: "\\d{4}"
+          type: string
+    TransferAccount:
+      required:
+        - balance
+        - from_account_id
+        - to_account_id
+      type: object
+      properties:
+        from_account_id:
+          type: integer
+          format: int64
+        to_account_id:
+          type: integer
+          format: int64
+        balance:
+          type: integer
+          format: int32
+    UpdateBalance:
+      required:
+        - account_id
+        - balance
+      type: object
+      properties:
+        account_id:
+          type: integer
+          format: int64
+        balance:
+          type: integer
+          format: int32
+    ResponseWrapperAccounts:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int64
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResponseAccount'
