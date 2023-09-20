@@ -92,7 +92,7 @@ class AccountServiceImplTest {
 
     @Test
     public void testRemoveFromBalance() {
-/*
+
         // Создаем тестовые данные
         UpdateBalance updateBalance = new UpdateBalance();
         updateBalance.setAccountId(1L);
@@ -110,7 +110,8 @@ class AccountServiceImplTest {
         responseAccount.setUsername("счет 1");
         responseAccount.setBalance(50);
 
-        when(passwordEncoder.encode(account.getPassword())).thenReturn("encodedPassword");
+//        when(passwordEncoder.encode(account.getPassword())).thenReturn("encodedPassword");
+        when(passwordEncoder.matches("encodedPassword", account.getPassword())).thenReturn(true);
         when(accountRepository.findById(updateBalance.getAccountId())).thenReturn(Optional.of(account));
         when(accountMapper.map(account)).thenReturn(responseAccount);
         when(accountRepository.save(account)).thenReturn(account);
@@ -118,32 +119,30 @@ class AccountServiceImplTest {
         // Вызываем метод accountService.removeFromBalance() и проверяем результат
         ResponseAccount result = accountService.removeFromBalance(updateBalance, "encodedPassword");
 
-        assertEquals(responseAccount, result);*/
+        assertEquals(responseAccount, result);
     }
 
-   /* @Test
-    public void testGetAllAccounts() {
-
-        long totalCount = 100L;
-        int pageNumber = 0;
-        int pageSize = 10;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        List<Account> list = new ArrayList<>();
-        list.add(new Account());
-        list.add(new Account());
-        list.add(new Account());
-
-        List<ResponseAccount> listDto = list.stream()
-                .map(accountMapper::map)
-                .toList();
-
-        ResponseWrapperAccounts result = new ResponseWrapperAccounts(totalCount, listDto);
-        when(accountRepository.count())
-                .thenReturn(totalCount);
-        when(accountRepository.findAll(pageable))
-                .thenReturn((Page<Account>));
-        assertEquals(accountService.getAllAccounts(pageNumber, pageSize), result);
-    }*/
+//    @Test
+//    public void testGetAllAccounts() {
+//
+//        // Создаем тестовые данные
+//        int pageNumber = 0;
+//        int pageSize = 10;
+//        Long totalAmount = 100L;
+//        List<Account> accountList = new ArrayList<>();
+//        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+//
+//        // Определяем результат, который вернет метод accountService.getAllAccounts()
+//        when(accountRepository.count()).thenReturn(totalAmount);
+//        when(accountRepository.findAll(pageable)).thenReturn(new PageImpl<>(accountList));
+//        when(accountMapper.map(any(Account.class))).thenReturn(new ResponseAccount());
+//
+//        // Вызываем метод accountService.getAllAccounts() и проверяем результат
+//        ResponseWrapperAccounts response = accountService.getAllAccounts(pageNumber, pageSize);
+//
+//        assertEquals(totalAmount, response.getCount());
+//        assertEquals(0, response.getResults().size());
+//    }
 
     /*@Test
     public void testTransfer() {
