@@ -102,7 +102,7 @@ public class AccountController {
             }
     )
     public ResponseAccount removeFromBalance(@RequestBody @Valid UpdateBalance dto,
-                                            @RequestParam(required = false) String password) {
+                                             @RequestParam(required = false) String password) {
 
         return accountService.removeFromBalance(dto, password);
     }
@@ -153,7 +153,7 @@ public class AccountController {
             }
     )
     public ResponseAccount transfer(@RequestBody @Valid TransferAccount dto,
-                                             @RequestParam(required = false) String password) {
+                                    @RequestParam(required = false) String password) {
 
         return accountService.transfer(dto, password);
     }
