@@ -1,6 +1,6 @@
 #Server
 server:
-  port: 8070
+  port: 8071
 
 #DataBase
 spring:
@@ -16,6 +16,14 @@ spring:
     user: ${POSTGRES_DB_USER}
     password: ${POSTGRES_DB_PASSWORD}
     validate-migration-naming: true
+
+#Password
+password:
+  encoder:
+    secret: ${ENCODER_SECRET}
+    iteration: ${ENCODER_ITERATION}
+    keylength: ${ENCODER_KEY_LENGTH}
+
 
 #OpenApi
 springdoc:
