@@ -12,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -122,54 +121,30 @@ class AccountServiceImplTest {
         assertEquals(responseAccount, result);
     }
 
-//    @Test
-//    public void testGetAllAccounts() {
-//
-//        // Создаем тестовые данные
-//        int pageNumber = 0;
-//        int pageSize = 10;
-//        Long totalAmount = 100L;
-//        List<Account> accountList = new ArrayList<>();
-//        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-//
-//        // Определяем результат, который вернет метод accountService.getAllAccounts()
-//        when(accountRepository.count()).thenReturn(totalAmount);
-//        when(accountRepository.findAll(pageable)).thenReturn(new PageImpl<>(accountList));
-//        when(accountMapper.map(any(Account.class))).thenReturn(new ResponseAccount());
-//
-//        // Вызываем метод accountService.getAllAccounts() и проверяем результат
-//        ResponseWrapperAccounts response = accountService.getAllAccounts(pageNumber, pageSize);
-//
-//        assertEquals(totalAmount, response.getCount());
-//        assertEquals(0, response.getResults().size());
-//    }
+    @Test
+    public void testGetAllAccounts() {
 
-    /*@Test
-    public void testTransfer() {
+        // Создаем тестовые данные
+        int pageNumber = 0;
+        int pageSize = 10;
+        Long totalAmount = 100L;
+        List<Account> accountList = new ArrayList<>();
+        accountList.add(new Account());
+        accountList.add(new Account());
+        accountList.add(new Account());
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        Long fromAccountId = 1L;
-        Long toAccountId = 2L;
-        Integer balance = 100;
-        String password = "password";
-        Account fromAccount = new Account();
-        fromAccount.setId(fromAccountId);
-        fromAccount.setBalance(1000);
-        fromAccount.setPassword("encodedPassword");
-        Account toAccount = new Account();
-        toAccount.setId(toAccountId);
-        toAccount.setBalance(0);
-        toAccount.setPassword("encodedPassword");
-        when(accountRepository.findById(fromAccountId)).thenReturn(Optional.of(fromAccount));
-        when(passwordEncoder.matches(password, fromAccount.getPassword())).thenReturn(true);
-        when(accountRepository.findById(toAccountId)).thenReturn(Optional.of(toAccount));
-        when(accountMapper.map(fromAccount)).thenReturn(new ResponseAccount());
-        when(accountMapper.map(toAccount)).thenReturn(new ResponseAccount());
+        // Определяем результат, который вернет метод accountService.getAllAccounts()
+        when(accountRepository.count()).thenReturn(totalAmount);
+        when(accountRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(accountList));
+        when(accountMapper.map(any(Account.class))).thenReturn(new ResponseAccount(), new ResponseAccount(), new ResponseAccount());
 
+        // Вызываем метод accountService.getAllAccounts() и проверяем результат
+        ResponseWrapperAccounts response = accountService.getAllAccounts(pageNumber, pageSize);
 
-        ResponseAccount response = accountService.transfer(new TransferAccount(fromAccountId, toAccountId, balance), password);
-
-        assertEquals(fromAccount.getBalance() - balance, response.getBalance());
-    }*/
+        assertEquals(totalAmount, response.getCount());
+        assertEquals(3, response.getResults().size());
+    }
 
     @Test
     public void testTransfer_AuthenticationException() {
