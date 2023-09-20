@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * Сущность аккаунт
@@ -38,6 +39,11 @@ public class Account {
     /**
      * Баланс пользователя
      */
-    @Column(name = "balance", nullable = false)
+    @Column(name = "balance")
     private Integer balance;
+
+    @ToString.Include(name = "password") // Строковое представление этого поля будет засекречено
+    private String maskPassword() {
+        return "****";
+    }
 }
