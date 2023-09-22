@@ -73,7 +73,52 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ResponseAccount'
-  /api/accounts/transfer:
+        "500":
+          description: "Произошла ошибка, не зависящая от вызывающей стороны"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseAccount'
+  /api/accounts/withdraws:
+    post:
+      tags:
+        - API по работе с аккаунтами
+      summary: Снятие средств с баланса
+      description: Нужно заполнить параметры для снятия баланса и ввести пин-код
+      operationId: removeFromBalance
+      parameters:
+        - name: password
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBalance'
+        required: true
+      responses:
+        "200":
+          description: Средства были сняты с баланса (OK)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseAccount'
+        "400":
+          description: "Средства не были сняты с баланса, т.к. не прошли валидацию\
+            \ (Bad Request)"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseAccount'
+        "500":
+          description: "Произошла ошибка, не зависящая от вызывающей стороны"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseAccount'
+  /api/accounts/transfers:
     post:
       tags:
         - API по работе с аккаунтами
@@ -83,7 +128,7 @@ paths:
       parameters:
         - name: password
           in: query
-          required: false
+          required: true
           schema:
             type: string
       requestBody:
@@ -106,7 +151,13 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ResponseAccount'
-  /api/accounts/replenish:
+        "500":
+          description: "Произошла ошибка, не зависящая от вызывающей стороны"
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseAccount'
+  /api/accounts/deposits:
     post:
       tags:
         - API по работе с аккаунтами
@@ -132,35 +183,8 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ResponseAccount'
-  /api/accounts/remove:
-    post:
-      tags:
-        - API по работе с аккаунтами
-      summary: Снятие средств с баланса
-      description: Нужно заполнить параметры для снятия баланса и ввести пин-код
-      operationId: removeFromBalance
-      parameters:
-        - name: password
-          in: query
-          required: false
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateBalance'
-        required: true
-      responses:
-        "200":
-          description: Средства были сняты с баланса (OK)
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseAccount'
-        "400":
-          description: "Средства не были сняты с баланса, т.к. не прошли валидацию\
-            \ (Bad Request)"
+        "500":
+          description: "Произошла ошибка, не зависящая от вызывающей стороны"
           content:
             '*/*':
               schema:
@@ -175,9 +199,12 @@ components:
           format: int64
         username:
           type: string
+          description: "имя аккаунта, должно быть уникальным"
         balance:
           type: integer
+          description: текущий баланс данного аккаунта
           format: int32
+      description: все найденные аккаунты
     CreateAccount:
       required:
         - password
@@ -188,9 +215,25 @@ components:
           maxLength: 64
           minLength: 2
           type: string
+          description: "имя аккаунта, должно быть уникальным"
         password:
           pattern: "\\d{4}"
           type: string
+          description: "пин-код, состоит из 4-х знаков"
+    UpdateBalance:
+      required:
+        - account_id
+        - balance
+      type: object
+      properties:
+        account_id:
+          type: integer
+          description: идентификатор изменяемого аккаунта
+          format: int64
+        balance:
+          type: integer
+          description: изменяемый баланс пользователя
+          format: int32
     TransferAccount:
       required:
         - balance
@@ -200,32 +243,25 @@ components:
       properties:
         from_account_id:
           type: integer
+          description: "идентификатор аккаунта, из которого переводят деньги"
           format: int64
         to_account_id:
           type: integer
+          description: "идентификатор аккаунта, в который переводят деньги"
           format: int64
         balance:
           type: integer
-          format: int32
-    UpdateBalance:
-      required:
-        - account_id
-        - balance
-      type: object
-      properties:
-        account_id:
-          type: integer
-          format: int64
-        balance:
-          type: integer
+          description: изменяемый баланс пользователя
           format: int32
     ResponseWrapperAccounts:
       type: object
       properties:
         count:
           type: integer
+          description: общее количество аккаунтов
           format: int64
         results:
           type: array
+          description: все найденные аккаунты
           items:
             $ref: '#/components/schemas/ResponseAccount'
