@@ -16,13 +16,4 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
      * @return найденный аккаунт
      */
     Account findAccountByUsername(String username);
-
-    /**
-     * Показать все сохраненные аккаунты
-     *
-     * @param pageable пагинация
-     * @return страница аккаунтов
-     */
-    @Override
-    Page<Account> findAll(Pageable pageable);
 }
