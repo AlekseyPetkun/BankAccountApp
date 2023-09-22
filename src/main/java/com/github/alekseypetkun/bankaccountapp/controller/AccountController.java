@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -48,15 +49,20 @@ public class AccountController {
                             responseCode = "409",
                             description = "Аккаунт не добавлен, " +
                                     "т.к. такое имя уже существует (Conflict)"
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Произошла ошибка, не зависящая от вызывающей стороны"
                     )
             }
     )
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseAccount addAccount(@RequestBody @Valid CreateAccount dto) {
 
         return accountService.addAccount(dto);
     }
 
-    @PostMapping("/replenish")
+    @PostMapping("/deposits")
     @Operation(
             summary = "Пополнение баланса",
             description = "Нужно заполнить параметры для пополнения баланса",
@@ -73,6 +79,10 @@ public class AccountController {
                             responseCode = "400",
                             description = "Баланс не пополнен, " +
                                     "т.к. не прошел валидацию (Bad Request)"
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Произошла ошибка, не зависящая от вызывающей стороны"
                     )
             }
     )
@@ -81,7 +91,7 @@ public class AccountController {
         return accountService.replenishBalance(dto);
     }
 
-    @PostMapping("/remove")
+    @PostMapping("/withdraws")
     @Operation(
             summary = "Снятие средств с баланса",
             description = "Нужно заполнить параметры для снятия баланса и ввести пин-код",
@@ -98,6 +108,10 @@ public class AccountController {
                             responseCode = "400",
                             description = "Средства не были сняты с баланса, " +
                                     "т.к. не прошли валидацию (Bad Request)"
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Произошла ошибка, не зависящая от вызывающей стороны"
                     )
             }
     )
@@ -132,7 +146,7 @@ public class AccountController {
         return accountService.getAllAccounts(pageNumber, pageSize);
     }
 
-    @PostMapping("/transfer")
+    @PostMapping("/transfers")
     @Operation(
             summary = "Перевод средств на другой счет",
             description = "Нужно заполнить параметры для перевода баланса и ввести пин-код",
@@ -149,6 +163,10 @@ public class AccountController {
                             responseCode = "400",
                             description = "Средства не были переведены, " +
                                     "т.к. не прошли валидацию (Bad Request)"
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Произошла ошибка, не зависящая от вызывающей стороны"
                     )
             }
     )
