@@ -2,6 +2,7 @@ package com.github.alekseypetkun.bankaccountapp.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,9 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ResponseWrapperAccounts {
 
-    private Long count; // общее количество аккаунтов
-    private List<ResponseAccount> results; // все найденные аккаунты
+    @Schema(description = "общее количество аккаунтов")
+    private Long count;
+
+    @Schema(description = "все найденные аккаунты")
+    private List<ResponseAccount> results;
 }
